@@ -2,4 +2,5 @@
 
 echo "Starting Nginx to serve Angular app..."
 
+
 nginx -g "daemon off;"
