@@ -19,6 +19,4 @@ http {
 }
 EOF
 
-
-
 nginx -c /tmp/nginx.conf -g "daemon off;"
