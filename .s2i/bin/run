@@ -1,6 +1,8 @@
 #!/bin/bash
 
-echo "Starting Nginx to serve Angular app..."
+echo "Starting Nginx..."
 
+# Override nginx root
+sed -i 's|root /usr/share/nginx/html;|root /opt/app-root/src;|g' /etc/nginx/conf.d/default.conf
 
 nginx -g "daemon off;"
