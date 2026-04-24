@@ -1,0 +1,51 @@
+import { Component, viewChild } from "@angular/core";
+import { FlexmonsterPivot, FlexmonsterPivotModule } from "ngx-flexmonster";
+import { ToggleButtonComponent } from "../../common/toggle-button/toggle-button.component";
+
+@Component({
+  selector: "app-customizing-grid",
+  templateUrl: "./customizing-grid.component.html",
+  styleUrls: ["./customizing-grid.component.css"],
+  imports: [ToggleButtonComponent, FlexmonsterPivotModule],
+  standalone: true,
+})
+export class CustomizingGridComponent {
+  readonly pivot = viewChild.required<FlexmonsterPivot>("pivot");
+
+  customizeToolbar(toolbar: Flexmonster.Toolbar) {
+    toolbar.showShareReportTab = true;
+  }
+
+  customizeCellFunction(cell: Flexmonster.CellBuilder, data: Flexmonster.CellData) {
+    if (data.measure && data.measure.uniqueName === "Price") {
+      let backgroundColor = "#00A45A";
+      let textShadowColor = "#095231";
+      let borderColor = "#009552";
+      cell.style = {
+        ...cell.style,
+        "background-color": backgroundColor,
+        "color": "white",
+        "font-weight": "bold",
+        "text-shadow": `0px 2px 3px ${textShadowColor}`,
+        "border-bottom": `1px solid ${borderColor}`,
+        "border-right": `1px solid ${borderColor}`,
+      };
+    }
+  }
+
+  removeCustomization() {
+    this.pivot().flexmonster.customizeCell(() => null);
+  }
+
+  applyCustomization() {
+    this.pivot().flexmonster.customizeCell(this.customizeCellFunction);
+  }
+
+  toggleCustomization(checked: boolean) {
+    if (checked) {
+      this.applyCustomization();
+    } else {
+      this.removeCustomization();
+    }
+  }
+}

@@ -1,0 +1,31 @@
+os:
+- linux
+language: node_js
+node_js:
+- '22'
+cache:
+  npm: false
+services:
+- xvfb
+dist: jammy
+addons:
+  chrome: stable
+env:
+  global:
+    - npm_config_detect_chromedriver_version=true
+before_install:
+- "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+before_script:
+- git clone https://github.com/flexmonster/framework-integration-testing.git
+- chmod +x ./framework-integration-testing/launchScripts/angular/angular.sh
+- chmod +x ./framework-integration-testing/launchScripts/angular/angularTestLaunch.sh
+- chmod +x ./framework-integration-testing/launchScripts/angular/angularKillPorts.sh
+script:
+- bash ./framework-integration-testing/launchScripts/angular/angular.sh
+- bash ./framework-integration-testing/launchScripts/angular/angularTestLaunch.sh
+- bash ./framework-integration-testing/launchScripts/angular/angularKillPorts.sh
+notifications:
+  slack:
+    rooms:
+      if: branch = master
+      secure: kvARUhEAMnvD8CxiO4G20auQ9hX7Hpgu/NdwX2uJ28z4KYptRvlPI2kPc49KcZepsrxcgwjCffOr5EU6wCVwnOebFWcASEnemz5EhyDtVyLdN8cihhIufpk2+qyekH4zceI4bb7hRqzll55cewVIlSVclZQ19qztEXO5zq47080JJZ1QW2PkEB+0WscIOm5Z2tppUfooLlt++bdmJllcW4NtW4VA+w1TT2KLvj0WYvs9xATBtvGulvKgjGdkuaA17x/FXVVz9YRPIPWcsn63TTNKNIp/syW/leV78tPn68zBqkFRJIwu2jkHjywl2TuvxWlqVIw8mTh9vQ1Illp0c4c1sUBP9p2afRy6aWFlfVD5YMCtdCM01v+YlknzvioKKjRpDV9KHVnJ/U4EYzL2Xa1q7TVWKUlFoleNsMoes8CgoOah5C2wtSfLMc4v11+VdkTs/XSMiMpbgN6Ypjv6qmOfKnM0SJ5X+i8RDgnM7TmojpDpU8J+oWSgydhiqgqvX1CPVnWAT6yKplzA8pZeIAmZ3fpQXMyFPH+G0MBHRPFJLvMS3E1kA1pxZmoSfJ6otBcEo4bpGUZUK9ppcI3nNdQYecDdnJ9Rh4nvqRKmK4paaQzb1uLCHwbz5PdkOdeCCXL1sSqUJlVzqxwwFbZIG8mXiyUmOr8vKCc8/xH4sgc=

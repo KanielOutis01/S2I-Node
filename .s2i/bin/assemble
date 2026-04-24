@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+echo "---> Copy source code"
+cp -R /tmp/src/. ./
+
+echo "---> Install dependencies"
+npm install
+
+echo "---> Build Angular app"
+npm run build -- --configuration=${NODE_ENV:-development}
+
+
+echo "---> Fix permissions"
+fix-permissions /opt/app-root

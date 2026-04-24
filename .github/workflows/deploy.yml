@@ -1,0 +1,23 @@
+name: Library_Pipeline_NODE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    uses: KanielOutis01/shared-libraries/.github/workflows/ci-template.yml@main
+    with:
+      app_name: s2i-ui-45
+      project_type: node
+    secrets: inherit
+
+  deploy:
+    needs: ci
+    uses: KanielOutis01/shared-libraries/.github/workflows/deploy-template.yml@main
+    with:
+      app_name: s2i-ui-45
+      namespace: s2i-poc-dev
+      project_type: node
+    secrets: inherit
