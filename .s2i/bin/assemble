@@ -7,9 +7,7 @@ cp -R /tmp/src/. ./
 echo "---> Install dependencies"
 npm install
 
-echo "---> Build Angular app"
-npm run build -- --configuration=${NODE_ENV:-development}
-
+echo "---> Skipping Angular build (dev mode)"
 
 echo "---> Fix permissions"
 fix-permissions /opt/app-root
