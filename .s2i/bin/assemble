@@ -6,7 +6,6 @@ echo "Starting S2I assemble..."
 APP_SRC_DIR="/tmp/src"
 TARGET_DIR="/opt/app-root/src"
 
-echo "Preparing writable directory..."
 mkdir -p ${TARGET_DIR}
 
 DIST_DIR=$(find ${APP_SRC_DIR}/dist -mindepth 1 -maxdepth 1 -type d | head -n 1)
@@ -16,7 +15,8 @@ if [ -z "$DIST_DIR" ]; then
   exit 1
 fi
 
-echo "Copying Angular files..."
-cp -r ${DIST_DIR}/* ${TARGET_DIR}/
+echo "Copying Angular files from browser folder..."
 
-echo "Files copied to ${TARGET_DIR}"
+cp -r ${DIST_DIR}/browser/* ${TARGET_DIR}/
+
+echo "Files copied successfully"
