@@ -1,8 +1,22 @@
 #!/bin/bash
 
-echo "Starting Nginx..."
+echo "Starting nginx..."
 
-# Override nginx root
-sed -i 's|root /usr/share/nginx/html;|root /opt/app-root/src;|g' /etc/nginx/conf.d/default.conf
+cat <<EOF > /tmp/nginx.conf
+events {}
 
-nginx -g "daemon off;"
+http {
+    server {
+        listen 8080;
+
+        root /opt/app-root/src;
+        index index.html;
+
+        location / {
+            try_files \$uri /index.html;
+        }
+    }
+}
+EOF
+
+nginx -c /tmp/nginx.conf -g "daemon off;"
