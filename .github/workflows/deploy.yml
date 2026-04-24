@@ -9,15 +9,15 @@ jobs:
   ci:
     uses: KanielOutis01/shared-libraries/.github/workflows/ci-template.yml@main
     with:
-      app_name: s2i-ui-45
-      project_type: node
+      app_name: s2i-ui-45-nginx
+      project_type: nginx
     secrets: inherit
 
   deploy:
     needs: ci
-    uses: KanielOutis01/shared-libraries/.github/workflows/deploy-template.yml@main
+    uses: KanielOutis01/shared-libraries/.github/workflows/deploy-template-nginx.yml@main
     with:
-      app_name: s2i-ui-45
+      app_name: s2i-ui-45-nginx
       namespace: s2i-poc-dev
-      project_type: node
+      project_type: nginx
     secrets: inherit

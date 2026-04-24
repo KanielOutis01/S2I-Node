@@ -1,13 +1,24 @@
 #!/bin/bash
 set -e
 
-echo "---> Copy source code"
-cp -R /tmp/src/. ./
+echo "Starting S2I assemble for Angular + Nginx..."
 
-echo "---> Install dependencies"
-npm install
+APP_SRC_DIR="/tmp/src"
+NGINX_HTML_DIR="/usr/share/nginx/html"
 
-echo "---> Skipping Angular build (dev mode)"
+echo "Cleaning default Nginx content..."
+rm -rf ${NGINX_HTML_DIR}/*
 
-echo "---> Fix permissions"
-fix-permissions /opt/app-root
+echo "Copying Angular dist files..."
+
+# Detect Angular app folder dynamically
+DIST_DIR=$(find ${APP_SRC_DIR}/dist -mindepth 1 -maxdepth 1 -type d | head -n 1)
+
+if [ -z "$DIST_DIR" ]; then
+  echo "ERROR: No Angular dist folder found!"
+  exit 1
+fi
+
+cp -r ${DIST_DIR}/* ${NGINX_HTML_DIR}/
+
+echo "Angular files copied to Nginx html directory"

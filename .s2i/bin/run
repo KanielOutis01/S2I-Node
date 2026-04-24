@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
 
-echo "Starting Angular app"
-npm start
+echo "Starting Nginx to serve Angular app..."
+
+nginx -g "daemon off;"
