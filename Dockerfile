@@ -4,22 +4,23 @@
 
 FROM image-registry.openshift-image-registry.svc:5000/openshift/nodejs:20-minimal-ubi8 AS build
 
-WORKDIR /tmp/app
+# Use OpenShift writable directory
+WORKDIR /opt/app-root/src
 
-# npm writable directories
-ENV HOME=/tmp
-ENV NPM_CONFIG_CACHE=/tmp/.npm
+# npm writable dirs
+ENV HOME=/opt/app-root/src
+ENV NPM_CONFIG_CACHE=/opt/app-root/src/.npm
 
 # Copy package files
 COPY package*.json ./
 
 # Copy internal CA
-COPY adib-ca.pem /tmp/app/adib-ca.pem
+COPY adib-ca.pem /opt/app-root/src/adib-ca.pem
 
 # Configure CA
-ENV NODE_EXTRA_CA_CERTS=/tmp/app/adib-ca.pem
+ENV NODE_EXTRA_CA_CERTS=/opt/app-root/src/adib-ca.pem
 
-RUN npm config set cafile /tmp/app/adib-ca.pem
+RUN npm config set cafile /opt/app-root/src/adib-ca.pem
 
 # Configure internal registry
 RUN npm config set registry "https://artifactory.adib.co.ae:443/artifactory/npm-vi/"
@@ -50,7 +51,7 @@ FROM image-registry.openshift-image-registry.svc:5000/openshift/adibnginx:latest
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build /tmp/app/dist/adib-pro-01/browser /usr/share/nginx/html
+COPY --from=build /opt/app-root/src/dist/adib-pro-01/browser /usr/share/nginx/html
 
 EXPOSE 8080
 
