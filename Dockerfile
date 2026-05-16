@@ -2,17 +2,18 @@
 # Stage 1 - Angular Build
 # =========================================
 
-FROM image-registry.openshift-image-registry.svc:5000/openshift/nodejs:20-minimal AS build
+FROM image-registry.openshift-image-registry.svc:5000/openshift/nodejs:20-minimal-ubi8 AS build
 
 WORKDIR /tmp/app
+
+# npm writable directories
+ENV HOME=/tmp
+ENV NPM_CONFIG_CACHE=/tmp/.npm
 
 # Copy package files
 COPY package*.json ./
 
-# Make writable
-RUN chmod -R 777 /tmp/app
-
-# Copy internal CA cert
+# Copy internal CA
 COPY adib-ca.pem /tmp/app/adib-ca.pem
 
 # Configure CA
@@ -20,7 +21,7 @@ ENV NODE_EXTRA_CA_CERTS=/tmp/app/adib-ca.pem
 
 RUN npm config set cafile /tmp/app/adib-ca.pem
 
-# Configure internal JFrog registry
+# Configure internal registry
 RUN npm config set registry "https://artifactory.adib.co.ae:443/artifactory/npm-vi/"
 
 RUN npm config set fund false && \
@@ -37,9 +38,6 @@ RUN npm install --legacy-peer-deps
 
 # Copy source
 COPY . .
-
-# Fix permissions again
-RUN chmod -R 777 /tmp/app
 
 # Build Angular
 RUN npm exec ng build -- --configuration production
